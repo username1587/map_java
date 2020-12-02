@@ -1,6 +1,5 @@
 package socialnetwork.repository.file;
 
-import socialnetwork.domain.Tuple;
 import socialnetwork.domain.User;
 import socialnetwork.domain.validators.Validator;
 

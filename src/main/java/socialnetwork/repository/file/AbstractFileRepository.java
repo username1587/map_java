@@ -5,7 +5,6 @@ import socialnetwork.domain.validators.Validator;
 import socialnetwork.repository.memory.InMemoryRepository;
 
 import java.io.*;
-
 import java.util.Arrays;
 import java.util.List;
 

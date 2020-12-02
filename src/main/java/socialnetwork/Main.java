@@ -1,12 +1,12 @@
 package socialnetwork;
 
+import socialnetwork.config.ApplicationContext;
 import socialnetwork.domain.Friendship;
 import socialnetwork.domain.Tuple;
 import socialnetwork.domain.User;
 import socialnetwork.domain.validators.FriendshipValidator;
 import socialnetwork.domain.validators.MessageValidator;
 import socialnetwork.domain.validators.UserValidator;
-import socialnetwork.helpers.Graph;
 import socialnetwork.helpers.Message;
 import socialnetwork.repository.Repository;
 import socialnetwork.repository.file.FriendshipFile;
@@ -17,7 +17,9 @@ import socialnetwork.ui.UI;
 
 public class Main {
     public static void main(String[] args) {
-//        String fileName=ApplicationContext.getPROPERTIES().getProperty("data.socialnetwork.users");
+//        String fileName= ApplicationContext.getPROPERTIES().getProperty("data.socialnetwork.users");
+//        String fileName2=ApplicationContext.getPROPERTIES().getProperty("data.socialnetwork.friendships");
+//        String fileName3=ApplicationContext.getPROPERTIES().getProperty("data.socialnetwork.messages");
         String fileName="data/users.csv";
         String fileName2="data/friendships.csv";
         String fileName3="data/messages.csv";

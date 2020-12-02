@@ -8,11 +8,9 @@ import socialnetwork.helpers.FriendshipRequestStatus;
 import socialnetwork.helpers.Graph;
 import socialnetwork.helpers.Message;
 import socialnetwork.repository.Repository;
-import socialnetwork.repository.file.MessageFile;
 
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 

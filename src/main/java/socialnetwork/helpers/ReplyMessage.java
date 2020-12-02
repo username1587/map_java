@@ -1,4 +1,4 @@
-//package socialnetwork.helpers;
+package socialnetwork.helpers;//package socialnetwork.helpers;
 //
 //import socialnetwork.domain.Entity;
 //import socialnetwork.domain.Tuple;

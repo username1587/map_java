@@ -3,7 +3,6 @@ package socialnetwork.domain;
 import socialnetwork.helpers.FriendshipRequestStatus;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /***
  * class representing the boundary/friendship between 2 users

@@ -3,13 +3,9 @@ package socialnetwork.helpers;
 import socialnetwork.domain.Entity;
 import socialnetwork.domain.Tuple;
 import socialnetwork.domain.User;
-import socialnetwork.repository.Repository;
 import socialnetwork.repository.file.UserFile;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Message extends Entity<Long> {
     private User from;

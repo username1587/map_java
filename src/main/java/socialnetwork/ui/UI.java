@@ -7,17 +7,12 @@ import socialnetwork.helpers.FriendshipRequestStatus;
 import socialnetwork.helpers.Message;
 import socialnetwork.service.UserService;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.DateTimeException;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 public class UI {
     // final in java e diferit de const din c++ cand e vorba de clase

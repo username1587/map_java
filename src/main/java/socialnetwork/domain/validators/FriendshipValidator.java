@@ -1,7 +1,6 @@
 package socialnetwork.domain.validators;
 
 import socialnetwork.domain.Friendship;
-import socialnetwork.domain.User;
 
 public class FriendshipValidator implements Validator<Friendship> {
     @Override

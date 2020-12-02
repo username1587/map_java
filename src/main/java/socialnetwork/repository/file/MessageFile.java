@@ -1,9 +1,7 @@
 package socialnetwork.repository.file;
 
-import socialnetwork.domain.Tuple;
 import socialnetwork.domain.validators.Validator;
 import socialnetwork.helpers.Message;
-import socialnetwork.repository.memory.InMemoryRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
