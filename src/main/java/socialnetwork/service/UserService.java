@@ -12,6 +12,7 @@ import socialnetwork.repository.Repository;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 public class UserService {
@@ -19,6 +20,7 @@ public class UserService {
     private Repository<Tuple<Long, Long>, Friendship> repoFriendships;
     private Repository<Long, Message> repoMessages;
     Graph graph;
+    public Long authentificatedUserId = null;
 
     private final static Long highestId = 1000L;
 
@@ -31,6 +33,27 @@ public class UserService {
         this.repoFriendships = repoFriendships;
         this.repoMessages = repoMessages;
         populateFriends();
+    }
+
+    /**
+     * @param email    - email of user to login
+     * @param password - password of user to login
+     * @return - returns null if there is not account with given email and password
+     * else returns id of user with given id and password (and sets authentificatedUser field to id found)
+     */
+    public Long login(String email, String password) {
+        AtomicLong idOfUser = new AtomicLong(-1); // folosesc AtomicLong pt ca ii pot modifica valoarea in lambda (are metoda de set, spre deosebire de Long)
+        repo.findAll().forEach(user -> {
+            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
+                idOfUser.getAndSet(user.getId());
+            }
+        });
+        if (idOfUser.get() == -1) {
+            authentificatedUserId = null;
+            return null;
+        }
+        authentificatedUserId = idOfUser.get();
+        return idOfUser.get();
     }
 
     public void sendMessage(Long idFrom, List<Long> idTo, String messageString) throws ValidationException {
@@ -186,10 +209,13 @@ public class UserService {
         User newUser = new User(user.getFirstName(), user.getLastName());
         newUser.setId(user.getId());
         newUser.setFriends(friends);
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(user.getPassword());
 
         Friendship friendship = new Friendship();
         Tuple<Long, Long> tuple = new Tuple<>(user.getId(), friend.getId());
         friendship.setId(tuple);
+        friendship.setStatus(FriendshipRequestStatus.PENDING);
 
         // TODO: Somewhere have to check if there is User A who has Friend B but User B has no Friend A (users.csv)
         // TODO: Somewhere have to check if there are 2 friendships with same ids,but different order (friendships.csv)
@@ -198,6 +224,8 @@ public class UserService {
         User newUser2 = new User(friend.getFirstName(), friend.getLastName());    // friend also adds user
         newUser2.setId(friend.getId());
         newUser2.setFriends(friends2);
+        newUser2.setEmail(friend.getEmail());
+        newUser2.setPassword(friend.getPassword());
 
         //TODO: asa de ce nu merge?
         /*friendship.getId().setLeft(user.getId());
@@ -234,17 +262,23 @@ public class UserService {
         User newUser = new User(user.getFirstName(), user.getLastName());
         newUser.setId(user.getId());
         newUser.setFriends(friends);
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(user.getPassword());
 
-        Friendship friendship = new Friendship();
-        Tuple<Long, Long> tuple = new Tuple<>(user.getId(), friend.getId());
-        friendship.setId(tuple);
+//        Friendship friendship = new Friendship();
+//        Tuple<Long, Long> tuple = new Tuple<>(user.getId(), friend.getId());
+//        friendship.setId(tuple);
+        Tuple<Long, Long> friendshipId = new Tuple<>(user.getId(), friend.getId());
+        Tuple<Long, Long> friendshipReverseId = new Tuple<>(friend.getId(), user.getId());
 
         //TODO: asa de ce nu merge? sa ma uit de ce nu poti modifica valorile luate cu getter
         /*friendship.getId().setLeft(user.getId());
         friendship.getId().setRight(friend.getId());*/
 
         repo.update(newUser);
-        repoFriendships.delete(friendship.getId());
+//        repoFriendships.delete(friendship.getId());
+        repoFriendships.delete(friendshipId);       // i don't know if id is {id1,id2} or {id2,id1} because they're not sorted
+        repoFriendships.delete(friendshipReverseId);
 
         // delete user2 and friendship2
 
@@ -254,7 +288,8 @@ public class UserService {
         User newUser2 = new User(friend.getFirstName(), friend.getLastName());
         newUser2.setId(friend.getId());
         newUser2.setFriends(friends2);
-
+        newUser2.setEmail(friend.getEmail());
+        newUser2.setPassword(friend.getPassword());
 //        Friendship friendship2 = new Friendship();
 //        Tuple<Long, Long> tuple2 = new Tuple<>(friend.getId(), friend.getId());
 //        friendship2.setId(tuple2);
@@ -329,6 +364,25 @@ public class UserService {
         for (Friendship friendship : friendships) {
             if (friendship.getId().getLeft() == idUser || friendship.getId().getRight() == idUser)
                 result.add(friendship);
+        }
+        return result;
+    }
+
+    /**
+     * @param idUser id of a user
+     * @return a list of all Users that are friends of user with id equal to idUser
+     */
+    public List<User> getFriendsOfUser(long idUser) {
+        Iterable<Friendship> friendships = repoFriendships.findAll();
+
+        List<User> result = new ArrayList<>();
+
+        for (Friendship friendship : friendships) {
+            if (friendship.getId().getLeft() == idUser || friendship.getId().getRight() == idUser)
+                if (friendship.getId().getLeft() == idUser)
+                    result.add(repo.findOne(friendship.getId().getRight()));
+                else
+                    result.add(repo.findOne(friendship.getId().getLeft()));
         }
         return result;
     }
