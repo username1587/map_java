@@ -379,5 +379,5 @@ public class MainFX extends Application {
         launch();
     }
     // comentariu paul 1
-    // comentariu paul 2
+    //comentariu Ovidiu 2
 }
