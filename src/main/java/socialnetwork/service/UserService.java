@@ -108,6 +108,21 @@ public class UserService {
         return result;
     }
 
+
+    /**
+     * @return all messages between 2 users using a Message/ReplyMessage class
+     */
+    public List<Message> getMessagesBetween2UsersInList(Long idUser1, Long idUser2) {
+        List<Message> messageList = new ArrayList<>();
+        for (Long i = 0L; i < repoMessages.getSize(); i++) {
+            Message message = repoMessages.findOne(i);
+            if (message.getFrom().getId().equals(idUser1) && message.getTo().getId().equals(idUser2) ||
+                    message.getFrom().getId().equals(idUser2) && message.getTo().getId().equals(idUser1)) {
+                messageList.add(message);
+            }
+        }
+        return messageList;
+    }
     /**
      * @return lowest id available for repoMessages
      */
@@ -120,7 +135,6 @@ public class UserService {
 
     /**
      * @param userId
-     * @return true if the user with id userId was delete
      * false, else
      */
     public boolean deleteUser(long userId) {
@@ -146,7 +160,6 @@ public class UserService {
 
         return true;
     }
-
     /**
      * takes friendships from repoFriendships and adds them to users.friends from repo
      */

@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -19,6 +20,7 @@ import socialnetwork.Main;
 import socialnetwork.domain.FriendshipDTO;
 import socialnetwork.domain.User;
 import socialnetwork.helpers.FriendshipRequestStatus;
+import socialnetwork.helpers.Message;
 import socialnetwork.helpers.UserToString;
 import socialnetwork.service.UserService;
 
@@ -65,7 +67,6 @@ public class MainFX extends Application {
 //        });
     }
 
-
     private void functieLuataCuCopyPaste(Stage stage, UserService userService) {
         stage.show();
         stage.setTitle("titlu");
@@ -94,7 +95,10 @@ public class MainFX extends Application {
         tab2.setText("cererile de prietenie");
         loadFriendRequestsPanel(userService);
         tab2.setContent(friendRequestPanel);
-        tabPane.getTabs().addAll(tab, tab2); // TODO: sa pun tabpane u asta undeva
+        Tab tab3 = new Tab();
+        tab3.setText("mesaje");
+        populateMessageTab(tab3, userService);
+        tabPane.getTabs().addAll(tab, tab2, tab3); // TODO: sa pun tabpane u asta undeva
 
         userPageSceneRootPanel.setCenter(tabPane);
 
@@ -174,17 +178,30 @@ public class MainFX extends Application {
             errorDisplayer.setText("prieten adaugat");
         });
 
-        textFieldPrefixAddFriend.textProperty().addListener(x->handleFilter(textFieldPrefixAddFriend,userService));
+        textFieldPrefixAddFriend.textProperty().addListener(x -> handleFilter(textFieldPrefixAddFriend, userService));
 
         return userPageSceneRootPanel;
     }
 
-    private void handleFilter(TextField textField,UserService userService){
-        Predicate<UserToString> firstNamePredicate= x->x.getFirstName().startsWith(textField.getText());
-        Predicate<UserToString> lastNamePredicate= x->x.getLastName().startsWith(textField.getText());
+    private void populateMessageTab(Tab tab3, UserService userService) {
+//        HBox mainPanel = new HBox();
+//        tab3.setContent(mainPanel);
+//        ListView<UserToString> listViewFriends = new ListView<>(modelFriends);
+//        Long selectedUserId=listViewFriends.getSelectionModel().getSelectedItem().getId();
+//        List<Message> userServiceMessagesList=userService.getMessagesBetween2UsersInList(0L,1L);
+//        ObservableList<Message> messageList=FXCollections.observableArrayList(userServiceMessagesList);
+//        ListView<Message> listViewMessages=new ListView<>(messageList);
+//        listViewMessages.setPrefWidth(600);
+//        mainPanel.getChildren().addAll(listViewFriends,listViewMessages);
 
-        List<UserToString> listUsers=new ArrayList<>();
-        userService.getAll().forEach(el->listUsers.add(new UserToString(el)));
+    }
+
+    private void handleFilter(TextField textField, UserService userService) {
+        Predicate<UserToString> firstNamePredicate = x -> x.getFirstName().startsWith(textField.getText());
+        Predicate<UserToString> lastNamePredicate = x -> x.getLastName().startsWith(textField.getText());
+
+        List<UserToString> listUsers = new ArrayList<>();
+        userService.getAll().forEach(el -> listUsers.add(new UserToString(el)));
 
         modelUsers.setAll(listUsers
                 .stream()

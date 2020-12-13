@@ -79,5 +79,11 @@ public class Message extends Entity<Long> {
         this.date = date;
     }
     //#endregion
+
+
+    @Override
+    public String toString() {
+        return message;
+    }
 }
 
