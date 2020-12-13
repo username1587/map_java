@@ -25,6 +25,7 @@ import socialnetwork.service.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MainFX extends Application {
@@ -38,6 +39,7 @@ public class MainFX extends Application {
     ObservableList<UserToString> modelUsers = FXCollections.observableArrayList();
     ObservableList<FriendshipDTO> friendshipsModel /*= FXCollections.observableArrayList()*/;
     List<FriendshipDTO> friendshipRequestsList;
+    private TextField textFieldPrefixAddFriend;
 
     private void loadFriendshipRequestsList(UserService userService) {
         // TODO
@@ -105,8 +107,8 @@ public class MainFX extends Application {
         User currentUser = (User) userBeforeCheck;
 
         updateModelFriends(userService);
-        TextField textField = new TextField();
-        textField.setPromptText("adauga un prieten...");
+        textFieldPrefixAddFriend = new TextField();
+        textFieldPrefixAddFriend.setPromptText("adauga un prieten...");
         Button buttonAddFriend = new Button("adauga prieten");
         Button buttonDelFriend = new Button("sterge prieten");
 //        borderPane.getChildren().addAll(comboBox,listView);
@@ -117,7 +119,7 @@ public class MainFX extends Application {
 
         updateModelUsers(userService);
         listViewUsers.setMaxHeight(100);
-        vBoxRightGridPane.getChildren().addAll(textField, listViewUsers);
+        vBoxRightGridPane.getChildren().addAll(textFieldPrefixAddFriend, listViewUsers);
         userPageSceneMyPagePanel.setRight(vBoxRightGridPane);
         userPageSceneRootPanel.setPadding(new Insets(10, 40, 40, 40));
 
@@ -172,7 +174,22 @@ public class MainFX extends Application {
             errorDisplayer.setText("prieten adaugat");
         });
 
+        textFieldPrefixAddFriend.textProperty().addListener(x->handleFilter(textFieldPrefixAddFriend,userService));
+
         return userPageSceneRootPanel;
+    }
+
+    private void handleFilter(TextField textField,UserService userService){
+        Predicate<UserToString> firstNamePredicate= x->x.getFirstName().startsWith(textField.getText());
+        Predicate<UserToString> lastNamePredicate= x->x.getLastName().startsWith(textField.getText());
+
+        List<UserToString> listUsers=new ArrayList<>();
+        userService.getAll().forEach(el->listUsers.add(new UserToString(el)));
+
+        modelUsers.setAll(listUsers
+                .stream()
+                .filter(firstNamePredicate.or(lastNamePredicate))
+                .collect(Collectors.toList()));
     }
 
     private void loadFriendRequestsPanel(UserService userService) {
@@ -249,7 +266,7 @@ public class MainFX extends Application {
     private void updateModelFriends(UserService userService) {
         modelFriends.setAll(userService.getFriendshipsOfUser(userService.authentificatedUserId)
                         .stream()
-//                .filter(friendship -> friendship.getStatus().equals(FriendshipRequestStatus.APPROVED))
+//                        .filter(friendship -> friendship.getStatus().equals(FriendshipRequestStatus.APPROVED))
                         .map(friendship -> {
                             UserToString user;
                             if (friendship.getId().getLeft().equals(userService.authentificatedUserId)) {
