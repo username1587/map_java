@@ -378,5 +378,6 @@ public class MainFX extends Application {
     public static void main(String[] args) {
         launch();
     }
-    // comentariu paul
+    //comentariu Ovidiu 1
+    //comentariu Ovidiu 2
 }
