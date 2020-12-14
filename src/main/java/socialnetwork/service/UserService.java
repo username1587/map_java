@@ -110,7 +110,7 @@ public class UserService {
 
 
     /**
-     * @return all messages between 2 users using a Message/ReplyMessage class
+     * @return all messages between 2 users using a Message/ReplyMessage class (creates a new list)
      */
     public List<Message> getMessagesBetween2UsersInList(Long idUser1, Long idUser2) {
         List<Message> messageList = new ArrayList<>();
